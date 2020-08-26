@@ -11,4 +11,5 @@ summary for the DS550-3 says that it should.
 The AA23300 responds on three I2C addresses. The EEPROM is at 0x56 and the processor is at
 0x3e. I haven't fully investiagated 0x2b.
 
-Tested on a Wemos D1 Mini and a STM32F103C 'Blue Bill'.
+Tested on a Wemos D1 Mini and a STM32F103C 'Blue Pill'. When compiled for the D1 Mini, 
+it includes a webserver.
