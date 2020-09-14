@@ -108,7 +108,7 @@ void setup() {
 
   int status;
 
-	status = 0;
+  status = 0;
 
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
 
@@ -125,7 +125,7 @@ void setup() {
 
 #endif
 
-	Wire.setClock(100000);
+  Wire.setClock(100000);
 
 #if defined(ARDUINO_GENERIC_STM32F103C)
 
@@ -145,19 +145,19 @@ void setup() {
 
   Debug.print("\r\n");
   Debug.print((char *) title);
-	Debug.print("\r\n");
-	Debug.print((char *) build_date);
-	Debug.print("\r\n\n");
+  Debug.print("\r\n");
+  Debug.print((char *) build_date);
+  Debug.print("\r\n\n");
 
 #endif
 
-	//
+  //
 
-	delay(100);
+  delay(100);
 
-	psu.init(PSON_do,&Debug);
+  psu.init(PSON_do,&Debug);
 
-	yield();
+  yield();
 
 #if (LCD_DISPLAY > 10) && (LCD_DISPLAY < 20)
 
@@ -165,11 +165,11 @@ void setup() {
   u8x8.begin();
   u8x8.setPowerSave(0);
 
-	u8x8.setFont(u8x8_font_chroma48medium8_r);
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
  
-	u8x8.refreshDisplay();
+  u8x8.refreshDisplay();
 
-	display_enabled = 1;
+  display_enabled = 1;
 
 #if LCD_DISPLAY < 16
   u8x8.drawString(5,0,(char *) title);
@@ -180,15 +180,15 @@ void setup() {
 
 #endif
 
-	yield();
+  yield();
 
-	//
+  //
 
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
 
-	status = connectWiFi();
+  status = connectWiFi();
 
-	get_addresses();
+  get_addresses();
 
   syslog(gateway_ip,(char *) "setup() complete");
 
@@ -200,7 +200,7 @@ void setup() {
 
 #endif
 
-	psu.on();
+  psu.on();
 
   return;
 }
@@ -217,71 +217,71 @@ void loop() {
   static uint32_t  last_display_update = 0, last_scan = 0;
 #if LCD_DISPLAY
   int              len, col;
-	static int       display_phase = 0;
+  static int       display_phase = 0;
 #endif
 
   text[0] = text2[0] = i = 0; // Because I can't be bothered to sort out #if's
 
-	//
+  //
 
   run_msecs = millis(); // run time
   run_secs  = run_msecs / 1000;
 
-	if ((run_secs - last_scan) > 5) {
+  if ((run_secs - last_scan) > 5) {
 
-		psu.scan();
+    psu.scan();
 
-		last_scan = run_secs;
-	}
+    last_scan = run_secs;
+  }
 
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
 
 #endif
 
-	//
+  //
 
-	if ((display_enabled)&&(run_secs > 3)&&
-			((run_msecs - last_display_update) > 50)) {
+  if ((display_enabled)&&(run_secs > 3)&&
+      ((run_msecs - last_display_update) > 50)) {
 
 #if LCD_DISPLAY == 11
 
-		switch (display_phase++) {
+    switch (display_phase++) {
 
-		case 0:
+    case 0:
 
-			break;
+      break;
 
-		case 1:
+    case 1:
       for (i = 0; i < 16; ++i) {
 
         text[i] = ' ';
       }
 
       text[i] = 0;
-			u8x8.drawString(0,1,text);
+      u8x8.drawString(0,1,text);
       break;
 
-		case 2:
+    case 2:
 
       sprintf(text,"%ds",run_secs);
       len = strlen(text);
       col = (len < 15) ? (16 - len) / 2:0;
       u8x8.drawString(col,2,text);
-			break;
+      break;
 
-		case 3:
+    case 3:
    
       break;
 
-		case 4:
-   
-			break;
-
-		case 5:
+    case 4:
    
       break;
 
-		case 6: // This is just for detecting memory leaks.
+    case 5:
+   
+      break;
+
+    case 6: // This is just for detecting memory leaks.
 
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
       sprintf(text,"%-6u  %08x",ESP.getFreeHeap(),text);
@@ -293,71 +293,71 @@ void loop() {
 
     default:
     
-			display_phase = 0;
+      display_phase = 0;
       break;      
-		}		
+    }    
 
     u8x8.refreshDisplay();
 
 #elif LCD_DISPLAY == 16
 
-		switch (display_phase++) {
+    switch (display_phase++) {
 
-		case 0:
+    case 0:
    
-			break;
+      break;
 
-		case 1:
+    case 1:
 
-			sprintf(text,"%ds",run_secs);
-			len = strlen(text);
-			col = (len < 7) ? (8 - len) / 2:0;
-			u8x8.drawString(col,1,text);
-			break;
+      sprintf(text,"%ds",run_secs);
+      len = strlen(text);
+      col = (len < 7) ? (8 - len) / 2:0;
+      u8x8.drawString(col,1,text);
+      break;
 
     case 2:
 
-			u8x8.drawString(0,2,"+F-+IPPP");
+      u8x8.drawString(0,2,"+F-+IPPP");
       break;
 
     case 3:
  
-			u8x8.drawString(0,3,"CFVVNGSF");
-			break;
+      u8x8.drawString(0,3,"CFVVNGSF");
+      break;
 
-		case 4:
+    case 4:
 
-			for (i = 0; i < 8; ++i) {
+      for (i = 0; i < 8; ++i) {
 
-				text[i] = ((psu.status_reg >> i) & 0x01) ? '1': '0';
-			}
+        text[i] = ((psu.status_reg >> i) & 0x01) ? '1': '0';
+      }
 
       text[i] = 0;
 
-			u8x8.drawString(0,4,text);
-			break;
+      u8x8.drawString(0,4,text);
+      break;
 
-		default:
+    default:
 
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI)
-			sprintf(text,"%ddB",WiFi.RSSI());
+      sprintf(text,"%ddB",WiFi.RSSI());
       u8x8.drawString(1,5,text);
 #endif
-			display_phase = 0;
-			break;
-		}
+      display_phase = 0;
+      break;
+    }
 
     u8x8.refreshDisplay();
 
-#endif	
+#endif  
 
-		last_display_update = run_msecs;
+    last_display_update = run_msecs;
 
-	}
+  }
 
 #if defined(ARDUINO_ESP8266_WEMOS_D1MINI) && WEBSERVER
 
-	webserver();
+  webserver();
 
 #endif
 
@@ -373,29 +373,29 @@ void loop() {
 int connectWiFi() {
 
   int                status, i;
-  static const char *ssid = "Woodmans Cottage",
-	                  *password = "VHdMAB0pKxc67XEMcQVxNicSaKS4kgBqP4gyIcteZr9Mok0EkX959mlnSbO1Qe7";
+  static const char *ssid = "SSID",
+                    *password = "password";
 
-	if ((status = WiFi.status()) != WL_CONNECTED) {
+  if ((status = WiFi.status()) != WL_CONNECTED) {
 
-		WiFi.mode(WIFI_STA);
+    WiFi.mode(WIFI_STA);
 
-		WiFi.begin(ssid,password);
+    WiFi.begin(ssid,password);
 
-		for (i = 0; i < 20; ++i) {
+    for (i = 0; i < 20; ++i) {
 
-			if ((status = WiFi.status()) == WL_CONNECTED) {
+      if ((status = WiFi.status()) == WL_CONNECTED) {
 
         udp.begin(2380);
 
-				break;
-			}
+        break;
+      }
 
-			delay(500);
-		}
-	}
+      delay(500);
+    }
+  }
 
-	return status;
+  return status;
 }
 
 /*
@@ -406,16 +406,16 @@ int connectWiFi() {
 
 void webserver() {
 
-	int         i;
-	char        text[128];
-	const char *request_s;
+  int         i;
+  char        text[128];
+  const char *request_s;
   WiFiClient  client;
-	String      request;
+  String      request;
   static const char *http_header[] = {"HTTP/1.1 200 OK", "Content-Type: text/html",
-																			"Connection: close", NULL},
+                                      "Connection: close", NULL},
                     *html_header[] = {"<html>", "<head>", "</head>", "<body>", NULL},
-										*html_footer[] = {"</body", "</html>", NULL}, 
-										*crlf = "\r\n", *on_s = "ON", *off_s = "OFF";
+                    *html_footer[] = {"</body", "</html>", NULL}, 
+                    *crlf = "\r\n", *on_s = "ON", *off_s = "OFF";
 
   if (!(client = server.available())) {
 
@@ -425,36 +425,36 @@ void webserver() {
   request   = client.readStringUntil('\r');
   request_s = request.c_str();
 
-	if ((request_s[5] == 'o')&&(request_s[6] == 'n')) {
+  if ((request_s[5] == 'o')&&(request_s[6] == 'n')) {
 
-		psu.on();
+    psu.on();
 
-	} else if ((request_s[5] == 'o')&&(request_s[6] == 'f')&&(request_s[7] == 'f')) {
+  } else if ((request_s[5] == 'o')&&(request_s[6] == 'f')&&(request_s[7] == 'f')) {
 
-		psu.standby();
-	}
+    psu.standby();
+  }
 
-	for (i = 0; http_header[i]; ++i) {
+  for (i = 0; http_header[i]; ++i) {
 
-		client.print(http_header[i]);
-		client.print(crlf);
-	}
+    client.print(http_header[i]);
+    client.print(crlf);
+  }
 
-	client.print(crlf);
+  client.print(crlf);
 
-	for (i = 0; html_header[i]; ++i) {
+  for (i = 0; html_header[i]; ++i) {
 
-		client.print(html_header[i]);
-		client.print("\n");
-	}
+    client.print(html_header[i]);
+    client.print("\n");
+  }
 
-	sprintf(text,"<h3 align=\"center\">%s</h3>\n",title);
-	client.print(text);
+  sprintf(text,"<h3 align=\"center\">%s</h3>\n",title);
+  client.print(text);
 
-	client.print("<table align=\"center\">\n");
+  client.print("<table align=\"center\">\n");
 
-	sprintf(text,"<tr><td>Output Over Current Protection</td><td>%s</td></tr>\n",(psu.OCP_12V) ? on_s: off_s);
-	client.print(text);
+  sprintf(text,"<tr><td>Output Over Current Protection</td><td>%s</td></tr>\n",(psu.OCP_12V) ? on_s: off_s);
+  client.print(text);
   sprintf(text,"<tr><td>Fan Fault</td><td>%s</td></tr>\n",(psu.Fan_Fault) ? on_s: off_s);
   client.print(text);
   sprintf(text,"<tr><td>Output Under Voltage Protection</td><td>%s</td></tr>\n",(psu.UVP_12V) ? on_s: off_s);
@@ -470,20 +470,20 @@ void webserver() {
   sprintf(text,"<tr><td>AC Pfail</td><td>%s</td></tr>\n",(psu.AC_Pfail) ? on_s: off_s);
   client.print(text);
 
-	client.print("</table>\n");
+  client.print("</table>\n");
 
   sprintf(text,"<!-- %s -->\n",build_date);
   client.print(text);
   sprintf(text,"<!-- %s -->\n",request_s);
   client.print(text);
 
-	for (i = 0; html_footer[i]; ++i) {
+  for (i = 0; html_footer[i]; ++i) {
 
-		client.print(html_footer[i]);
-		client.print("\n");
-	}
+    client.print(html_footer[i]);
+    client.print("\n");
+  }
 
-	return;
+  return;
 }
 
 #endif
@@ -509,19 +509,19 @@ void get_addresses() {
 
 int syslog(IPAddress server,char *message) {
 
-	char       buffer[128];
+  char       buffer[128];
   WiFiClient syslog;
 
-	if (strlen(message) > 64) {
+  if (strlen(message) > 64) {
 
-		message[64] = 0;
-	}
+    message[64] = 0;
+  }
 
   // <166> is local4, informational
 
-	sprintf(buffer,"<166>1 ds550-3: %s",message);
+  sprintf(buffer,"<166>1 ds550-3: %s",message);
 
-	if (server) {
+  if (server) {
 
     udp.beginPacket(server,514);
     udp.print(buffer);
@@ -529,16 +529,16 @@ int syslog(IPAddress server,char *message) {
 
     yield();
 
-	}
+  }
 
-	return 0;
+  return 0;
 }
 
 #elif defined(ARDUINO_GENERIC_STM32F103C)
 
 void yield(void) {
 
-	return;
+  return;
 }
 
 #endif
